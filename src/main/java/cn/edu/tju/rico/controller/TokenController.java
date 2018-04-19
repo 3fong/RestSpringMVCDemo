@@ -1,11 +1,12 @@
 package cn.edu.tju.rico.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.edu.tju.rico.annotation.IgnoreSecurity;
 import cn.edu.tju.rico.authorization.TokenManager;
-import cn.edu.tju.rico.response.Response;
+import cn.edu.tju.rico.response.ResponseEntity;
+import cn.edu.tju.rico.response.StatusCode;
 import cn.edu.tju.rico.service.UserService;
 import cn.edu.tju.rico.utils.Constants;
   
@@ -26,31 +28,12 @@ import cn.edu.tju.rico.utils.Constants;
 @RestController
 @RequestMapping("/tokens")
 public class TokenController {
-
+	@Autowired
 	private UserService userService;
+	@Autowired
 	private TokenManager tokenManager;
 	private static final Logger log = Logger.getLogger(TokenController.class);
-
 	
-	public UserService getUserService() {
-		return userService;
-	}
-
-	@Resource(name = "userService")
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
-	public TokenManager getTokenManager() {
-		return tokenManager;
-	}
-
-	@Resource(name = "tokenManager")
-	public void setTokenManager(TokenManager tokenManager) {
-		this.tokenManager = tokenManager;
-	}
-
-	  
 	/**     
 	 * @description 登录处理
 	 * @author rico       
@@ -58,18 +41,22 @@ public class TokenController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@IgnoreSecurity
-	public Response login(@RequestParam("uname") String uname,
-			@RequestParam("passwd") String passwd, HttpServletResponse response) {
+	public ResponseEntity login(@RequestParam("uname") String uname,
+			@RequestParam("passwd") String passwd) {
 		boolean flag = userService.login(uname, passwd);
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage("Login Failure...");
 		if (flag) {
 			String token = tokenManager.createToken(uname);
-			log.debug("**** Generate Token **** : " + token);
-			Cookie cookie = new Cookie(Constants.DEFAULT_TOKEN_NAME, token);
-			log.debug("Write Token to Cookie and return to the Client : " + cookie.toString());
-			response.addCookie(cookie);
-			return new Response().success("Login Success...");
+			log.debug("Token: " + token);
+			response.setCode(StatusCode.SUCCESS.getCode());
+			response.setMessage("Logout Success...");
+			Map<String,String> map = new HashMap<>();
+			map.put("X-Token", token);
+			response.setData(map);
 		}
-		return new Response().failure("Login Failure...");
+		return response;
 	}
 
 	/**     
@@ -79,10 +66,13 @@ public class TokenController {
 	 */
 	@RequestMapping(method = RequestMethod.DELETE)
 	@IgnoreSecurity
-	public Response logout(HttpServletRequest request) {
+	public ResponseEntity logout(HttpServletRequest request) {
 		String token = request.getHeader(Constants.DEFAULT_TOKEN_NAME);
 		tokenManager.deleteToken(token);
 		log.debug("Logout Success...");
-		return new Response().success("Logout Success...");
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.SUCCESS.getCode());
+		response.setMessage("Logout Success...");
+		return response;
 	}
 }

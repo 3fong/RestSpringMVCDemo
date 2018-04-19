@@ -1,15 +1,16 @@
 package cn.edu.tju.rico.controller;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.tju.rico.annotation.IgnoreSecurity;
 import cn.edu.tju.rico.model.entity.User;
 import cn.edu.tju.rico.service.UserService;
 
@@ -23,20 +24,10 @@ import cn.edu.tju.rico.service.UserService;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
+	@Autowired
 	private UserService userService;
-	/** Log4j日志处理(@author: rico) */
 	private static final Logger log = Logger.getLogger(UserController.class);
 	
-	public UserService getUserService() {
-		return userService;
-	}
-
-	@Resource(name = "userService")
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
 	/**
 	 * @description 获取指定Id的用户
 	 * @author rico
@@ -60,6 +51,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/user", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json")
+	@IgnoreSecurity
 	public User addUser(@RequestBody @Valid User user) {
 		userService.addUser(user);
 		log.debug("添加用户 :" + user);

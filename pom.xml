@@ -7,6 +7,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RestSpringMVCDemo Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+	
+	<properties>
+		<java.version>1.8</java.version>	
+	</properties>
 	<dependencies>
 		<!-- Servlet API -->
 		<dependency>
@@ -116,6 +120,16 @@
 					<path>/${project.artifactId}</path> <!-- 此处的名字是项目发布的工程名 -->
 				</configuration>
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<showWarnings>true</showWarnings>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 </project>

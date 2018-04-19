@@ -46,16 +46,11 @@ public class SecurityAspect {
 		Method method = methodSignature.getMethod();
 		log.debug("Method : " + method.getName() + " : "
 				+ method.isAnnotationPresent(IgnoreSecurity.class));
-		// 若目标方法忽略了安全性检查,则直接调用目标方法
-		if (method.isAnnotationPresent(IgnoreSecurity.class)) {
-			return pjp.proceed();
-		}
-
 		// 从 request header 中获取当前 token
 		String token = WebContextUtil.getRequest().getHeader(
 				Constants.DEFAULT_TOKEN_NAME);
-		// 检查 token 有效性
-		if (!tokenManager.checkToken(token)) {
+		// 若目标方法忽略了安全性检查,则直接调用目标方法
+		if (!method.isAnnotationPresent(IgnoreSecurity.class)&&!tokenManager.checkToken(token)) {
 			String message = String.format("token [%s] is invalid", token);
 			log.debug("message : " + message);
 			throw new TokenException(message);

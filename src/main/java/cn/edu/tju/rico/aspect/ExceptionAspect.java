@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import cn.edu.tju.rico.exception.TokenException;
-import cn.edu.tju.rico.response.Response;
-
+import cn.edu.tju.rico.response.ResponseEntity;
+import cn.edu.tju.rico.response.StatusCode;
 /**
  * Title: 全局异常处理切面 Description: 利用 @ControllerAdvice + @ExceptionHandler
  * 组合处理Controller层RuntimeException异常
@@ -31,12 +31,14 @@ public class ExceptionAspect {
 	/**
 	 * 400 - Bad Request
 	 */
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public Response handleHttpMessageNotReadableException(
+	public ResponseEntity handleHttpMessageNotReadableException(
 			HttpMessageNotReadableException e) {
-		log.error("could_not_read_json...", e);
-		return new Response().failure("could_not_read_json");
+		log.error("could_not_read_json..."+e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage("could_not_read_json");
+		return response;
 	}
 
 	/**
@@ -44,9 +46,12 @@ public class ExceptionAspect {
 	 */
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler({MethodArgumentNotValidException.class})
-	public Response handleValidationException(MethodArgumentNotValidException e) {
-		log.error("parameter_validation_exception...", e);
-		return new Response().failure("parameter_validation_exception");
+	public ResponseEntity handleValidationException(MethodArgumentNotValidException e) {
+		log.error("parameter_validation_exception..."+ e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage("parameter_validation_exception");
+		return response;
 	}
 
 	/**
@@ -55,10 +60,13 @@ public class ExceptionAspect {
 	 */
 	@ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	public Response handleHttpRequestMethodNotSupportedException(
+	public ResponseEntity handleHttpRequestMethodNotSupportedException(
 			HttpRequestMethodNotSupportedException e) {
-		log.error("request_method_not_supported...", e);
-		return new Response().failure("request_method_not_supported");
+		log.error("request_method_not_supported..."+ e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage("request_method_not_supported");
+		return response;
 	}
 
 	/**
@@ -67,9 +75,12 @@ public class ExceptionAspect {
 	 */
 	@ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
 	@ExceptionHandler({ HttpMediaTypeNotSupportedException.class })
-	public Response handleHttpMediaTypeNotSupportedException(Exception e) {
-		log.error("content_type_not_supported...", e);
-		return new Response().failure("content_type_not_supported");
+	public ResponseEntity handleHttpMediaTypeNotSupportedException(Exception e) {
+		log.error("content_type_not_supported..."+ e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage("content_type_not_supported");
+		return response;
 	}
 
 	/**
@@ -77,9 +88,12 @@ public class ExceptionAspect {
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(TokenException.class)
-	public Response handleTokenException(Exception e) {
-		log.error("Token is invaild...", e);
-		return new Response().failure("Token is invaild");
+	public ResponseEntity handleTokenException(Exception e) {
+		log.error("Token is invaild..."+ e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage(e.getMessage());
+		return response;
 	}
 
 	/**
@@ -87,8 +101,11 @@ public class ExceptionAspect {
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public Response handleException(Exception e) {
-		log.error("Internal Server Error...", e);
-		return new Response().failure("Internal Server Error");
+	public ResponseEntity handleException(Exception e) {
+		log.error("Internal Server Error..."+ e.getMessage());
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(StatusCode.FAILER.getCode());
+		response.setMessage(e.getMessage());
+		return response;
 	}
 }

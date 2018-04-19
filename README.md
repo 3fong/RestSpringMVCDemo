@@ -1,4 +1,5 @@
-# REST风格框架实战：从MVC到前后端分离(附完整Demo) 
+# 项目说明
+最近在看前后端分离,看到这个初始项目结构流程还比较清晰,就本地跑了一下,项目比较简单,同时原作者还有比较全面的文档,地址:《REST风格框架实战：从MVC到前后端分离(附完整Demo)》，博客地址：http://blog.csdn.net/justloveyou_/article/details/74379479
 
 RestSpringMVCDemo项目是一个基于Spring的符合REST风格的项目，具有MVC分层结构并实现前后端分离。该项目体现了一个具有REST风格项目的基本特征：
 
@@ -13,5 +14,3 @@ RestSpringMVCDemo项目是一个基于Spring的符合REST风格的项目，具�
  - Cors跨域请求机制;
  
  - 安全(鉴权)机制。
- 
- 关于REST服务概念、框架和实战的全面介绍，请移步我的博客《REST风格框架实战：从MVC到前后端分离(附完整Demo)》，博客地址：http://blog.csdn.net/justloveyou_/article/details/74379479

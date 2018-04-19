@@ -55,13 +55,11 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional(readOnly = false)   //必须设置为false,因为此处切入了日志的保存逻辑
 	public Object getUser(int id) {
-		// TODO Auto-generated method stub
 		return userMapper.findUserById(id);
 	}
 
 	@Override
 	public void addUser(User user) {
-		// TODO Auto-generated method stub
 		userMapper.saveUser(user);
 	}
 }
